@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["TravelAgentWeb/TravelAgentWeb.csproj", "TravelAgentWeb/"]
-RUN dotnet restore "TravelAgentWeb/TravelAgentWeb.csproj"
+COPY ["AirlineSendAgent/AirlineSendAgent.csproj", "AirlineSendAgent/"]
+RUN dotnet restore "AirlineSendAgent/AirlineSendAgent.csproj"
 COPY . .
-WORKDIR "/src/TravelAgentWeb"
-RUN dotnet build "TravelAgentWeb.csproj" -c Release -o /app/build
+WORKDIR "/src/AirlineSendAgent"
+RUN dotnet build "AirlineSendAgent.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TravelAgentWeb.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AirlineSendAgent.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TravelAgentWeb.dll"]
+ENTRYPOINT ["dotnet", "AirlineSendAgent.dll"]
